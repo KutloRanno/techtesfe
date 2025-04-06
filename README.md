@@ -45,8 +45,7 @@ https://user-demo-link.com (replace with Loom or other screen recording)
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-username/meliotech-carousel.git
-cd meliotech-carousel
+git clone https://github.com/KutloRanno/techtesfe.git
 
 # Install dependencies
 npm install
