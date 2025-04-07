@@ -61,7 +61,7 @@ function App() {
               HP OMEN GAMING LAPTOP
             </p>
           </div>
-          <div className="bg-gray-600">
+          <div className="bg-white">
             <div className="bg-white flexx m-auto w-[29rem] h-96  pxx-5 py-5 border-t border-gray-100 ">
               {serverFiles.length > 0 ? (
                 <Slider {...settings} className="w-[29rem] h-96 object-fill">
