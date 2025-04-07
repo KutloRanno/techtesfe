@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { FaSave } from "react-icons/fa";
+import { FaSave, FaTrash } from "react-icons/fa";
+import { toast } from "react-toastify";
 
-const FileUpload = ({ setServerFiles }) => {
+const FileUpload = ({ fetchFiles }) => {
   const [files, setFiles] = useState([]);
-  const [uploadProgress, setUploadProgress] = useState({});
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+  //   const [uploadProgress, setUploadProgress] = useState({});
+  //   const [uploadedFiles, setUploadedFiles] = useState([]);
 
   console.log(files);
 
@@ -25,54 +26,22 @@ const FileUpload = ({ setServerFiles }) => {
       const response = await axios.post(
         "http://localhost:5000/upload",
         formData,
-        {
-          //   onUploadProgress: (progressEvent) => {
-          //     const percentCompleted = Math.round(
-          //       (progressEvent.loaded * 100) / progressEvent.total
-          //     );
-          //     setUploadProgress((prev) => ({
-          //       ...prev,
-          //       [progressEvent.target.fileName]: percentCompleted,
-          //     }));
-          //   },
-        }
+        {}
       );
 
-      setUploadedFiles(response.data.files);
-      setServerFiles([...response.data.files]);
-      alert("Files uploaded successfully!");
-      //   fetchFiles(); // Refresh file list
+      //   setUploadedFiles(response.data.files);
+      setFiles([]);
+      toast.success("Images uploaded successfully! 📸");
+      fetchFiles(); // Refresh file list
     } catch (error) {
-      console.error("Error uploading files:", error);
-      alert("Error uploading files");
+      console.error();
+      toast.error("Error uploading files ❌");
     }
   };
 
   function handleRemove(fileName) {
     setFiles((prevFiles) => prevFiles.filter((item) => item.name !== fileName));
   }
-
-  const handleDownload = async (filename) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/files/${filename}`,
-        {
-          responseType: "blob",
-        }
-      );
-
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", filename);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error("Error downloading file:", error);
-      alert("Error downloading file");
-    }
-  };
 
   return (
     <div className="justify-end p-[20px] max-w-[800px] m-[0_auto]">
@@ -100,7 +69,7 @@ const FileUpload = ({ setServerFiles }) => {
         </button>
 
         {files.length > 0 && (
-          <div className="my-3" key={files.length + Math.random}>
+          <div className="my-3">
             <h3 className="text-green-600 font-semibold mt-7 mb-5">
               Preview images
             </h3>
@@ -114,7 +83,7 @@ const FileUpload = ({ setServerFiles }) => {
                     key={file.name}
                     onClick={() => handleRemove(file.name)}
                   >
-                    Remove
+                    <FaTrash className="text-red-600" />
                   </button>
                   <img
                     src={imageUrl}
@@ -128,56 +97,6 @@ const FileUpload = ({ setServerFiles }) => {
           </div>
         )}
       </div>
-
-      {/* <div style={{ marginTop: "30px" }}>
-        <h2>Server Files</h2>
-        <button onClick={fetchFiles} style={{ marginBottom: "10px" }}>
-          Refresh File List
-        </button>
-
-        {serverFiles.length === 0 ? (
-          <p>No files on server yet</p>
-        ) : (
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  File Name
-                </th>
-                <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  Size (KB)
-                </th>
-                <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  Upload Date
-                </th>
-                <th style={{ border: "1px solid #ddd", padding: "8px" }}>
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {serverFiles.map((file, index) => (
-                <tr key={index}>
-                  <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                    {file.name}
-                  </td>
-                  <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                    {Math.round(file.size / 1024)}
-                  </td>
-                  <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                    {new Date(file.createdAt).toLocaleString()}
-                  </td>
-                  <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                    <button onClick={() => handleDownload(file.name)}>
-                      Download
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>*/}
     </div>
   );
 };
